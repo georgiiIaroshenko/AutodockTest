@@ -204,18 +204,6 @@ class NewsViewModel {
 - iOS 15.0+
 - Swift 5.9+
 
-### Installation
-
-```bash
-git clone https://github.com/yourusername/AutoNews.git
-cd AutoNews
-open AutoNews.xcodeproj
-```
-
-Build and run with `⌘R`
-
----
-
 ## 📊 Performance
 
 | Metric | Value |
@@ -233,17 +221,6 @@ Build and run with `⌘R`
 - ✅ Lazy cell registration
 - ✅ Diffable data source for efficient updates
 
----
-
-## 🧪 Testing
-
-```bash
-# Run unit tests
-xcodebuild test -scheme AutoNews -destination 'platform=iOS Simulator,name=iPhone 15'
-```
-
----
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -252,11 +229,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👤 Author
 
-**Your Name**
+**Egor Iaroshenko**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
-- Telegram: [@yourtelegram](https://t.me/yourtelegram)
+- GitHub: [@EgorIaroshenko](https://github.com/georgiiIaroshenko)
+- LinkedIn: [Egor-iaroshenko](www.linkedin.com/in/georgii-iaroshenko)
+- Telegram: [@IaroshEgor](https://t.me/@iaroshGeor)
 
 ---
 
