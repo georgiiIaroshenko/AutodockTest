@@ -204,7 +204,6 @@ class NewsViewModel {
 - iOS 15.0+
 - Swift 5.9+
 
-
 ## 📊 Performance
 
 | Metric | Value |
@@ -222,7 +221,6 @@ class NewsViewModel {
 - ✅ Lazy cell registration
 - ✅ Diffable data source for efficient updates
 
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -231,7 +229,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👤 Author
 
-**Your Name**
+**Egor Iaroshenko**
 
 - GitHub: [@EgorIaroshenko](https://github.com/georgiiIaroshenko)
 - LinkedIn: [Egor-iaroshenko](www.linkedin.com/in/georgii-iaroshenko)
