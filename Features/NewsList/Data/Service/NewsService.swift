@@ -5,6 +5,7 @@ import Foundation
 protocol NewsServiceProtocol: AnyObject {
     func loadFirst() async throws -> [New]
     func loadNext() async throws -> [New]
+    func prefetchNext() async throws
 }
 
 // MARK: - NewsService
@@ -15,6 +16,7 @@ final class NewsService: NewsServiceProtocol {
     
     private let repository: NewsRepositoryProtocol
     private var isLoadingNextPage = false
+    private var isPrefetchNextPage = false
     private var pagination = PaginationState(page: 1, pageSize: 15, totalCount: 0)
     private var loadedIDs = Set<Int>()
     
@@ -50,10 +52,10 @@ final class NewsService: NewsServiceProtocol {
             throw NewsServiceError.noMoreNews
         }
         
-        isLoadingNextPage = true
-        defer { isLoadingNextPage = false }
-        
         do {
+            isLoadingNextPage = true
+            defer { isLoadingNextPage = false }
+
             let nextPage = pagination.page + 1
             let page = try await repository.getNewsPage(page: nextPage, pageSize: pagination.pageSize)
             
@@ -62,9 +64,35 @@ final class NewsService: NewsServiceProtocol {
             let uniques = filterUnique(page.news)
             
             print("✅ [NewsService] Loaded page \(nextPage): \(uniques.count) new items")
+            isPrefetchNextPage = false
             return uniques
         } catch {
             print("❌ [NewsService] Failed to load page \(pagination.page + 1): \(error.localizedDescription)")
+            throw error
+        }
+    }
+    
+    func prefetchNext() async throws {
+        guard !isPrefetchNextPage else {
+            print("⚠️ [NewsService] Already prefetch next page")
+            throw NewsServiceError.alreadyLoading
+        }
+        
+        guard pagination.hasMore else {
+            print("ℹ️ [NewsService] No more news to load")
+            throw NewsServiceError.noMoreNews
+        }
+        
+        isPrefetchNextPage = true
+        
+        do {
+            let nextPage = pagination.page + 1
+            let page = try await repository.prefetchNewsPage(page: nextPage, pageSize: pagination.pageSize)
+            
+            print("✅ [NewsService] Prefetch loaded page \(nextPage)")
+        } catch {
+            isPrefetchNextPage = false
+            print("❌ [NewsService] Failed prefetch to load page \(pagination.page + 1): \(error.localizedDescription)")
             throw error
         }
     }

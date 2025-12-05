@@ -6,6 +6,7 @@ import UIKit
 protocol NewsViewModelGetNewsProtocol: AnyObject {
     func getNews() async throws
     func getNextPageNews() async throws
+    func prefetchNextPageNews()
 }
 
 protocol NewsViewModelSubjects: AnyObject {
@@ -79,6 +80,12 @@ final class NewsViewModel: NewsViewModelProtocol {
         } catch {
             print("❌ [NewsViewModel] Error loading next page: \(error.localizedDescription)")
             throw error
+        }
+    }
+    
+    func prefetchNextPageNews() {
+        Task(priority: .background) {
+           try await newsService.prefetchNext()
         }
     }
     

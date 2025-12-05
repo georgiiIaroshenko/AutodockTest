@@ -10,6 +10,9 @@ protocol NewsCollectionViewInput: AnyObject {
 protocol NewsCollectionViewOutput: AnyObject {
     var bottomPullPublisher: AnyPublisher<Void, Never> { get }
     var selectionPublisher: AnyPublisher<NewsItem, Never> { get }
+    var prefetchThresholdPublisher: AnyPublisher<Bool, Never> { get }
+    
+    func resetPrefetchTrigger()
 }
 
 protocol NewsCollectionViewProtocol: NewsCollectionViewInput, NewsCollectionViewOutput {}
@@ -28,15 +31,20 @@ final class NewsCollectionView: UIView, NewsCollectionViewProtocol {
     
     private var isFooterLoading = false
     private var isFooterPulling = false
+
     
     private let bottomPullSubject = PassthroughSubject<Void, Never>()
     private let selectionSubject = PassthroughSubject<NewsItem, Never>()
+    private let prefetchThresholdSubject = PassthroughSubject<Bool, Never>()
     
     var bottomPullPublisher: AnyPublisher<Void, Never> {
         bottomPullSubject.eraseToAnyPublisher()
     }
     var selectionPublisher: AnyPublisher<NewsItem, Never> {
         selectionSubject.eraseToAnyPublisher()
+    }
+    var prefetchThresholdPublisher: AnyPublisher<Bool, Never> {
+        prefetchThresholdSubject.eraseToAnyPublisher()
     }
     
     private let layoutProvider: NewsLayoutProvidingProtocol
@@ -97,6 +105,10 @@ final class NewsCollectionView: UIView, NewsCollectionViewProtocol {
                 .setLoading(self.isFooterPulling || self.isFooterLoading)
         }
     }
+    
+    func resetPrefetchTrigger() {
+        prefetchThresholdSubject.send(false)
+    }
 }
 
 extension NewsCollectionView: SetupView {
@@ -108,6 +120,7 @@ extension NewsCollectionView: SetupView {
     func setupSubView() {
         addSubview(collectionView)
         collectionView.delegate = self
+        collectionView.prefetchDataSource = self
     }
     
     func setupConstraints() {
@@ -198,5 +211,16 @@ private extension NewsCollectionView {
         let visibleHeight = scrollView.bounds.height
         let contentHeight = scrollView.contentSize.height
         return offsetY + visibleHeight - contentHeight
+    }
+}
+
+extension NewsCollectionView: UICollectionViewDataSourcePrefetching {
+        
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        let totalItems = dataSource.snapshot().numberOfItems
+            guard let maxIndex = indexPaths.map({ $0.item }).max(),
+                  totalItems - maxIndex - 1 <= 5 else { return }
+            
+        prefetchThresholdSubject.send(true)
     }
 }

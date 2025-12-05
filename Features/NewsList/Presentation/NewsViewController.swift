@@ -84,6 +84,7 @@ extension NewsViewController: SetupView {
                 if !models.isEmpty {
                     self?.animationView.stopAnimation()
                 }
+                self?.collectionView.resetPrefetchTrigger()
             }
             .store(in: &bag)
     }
@@ -95,6 +96,13 @@ extension NewsViewController: SetupView {
         collectionView.selectionPublisher
             .sink { [weak self] news in
                 self?.model.didSelect(item: news)
+            }
+            .store(in: &bag)
+        collectionView.prefetchThresholdPublisher
+            .sink { [weak self] b in
+                if b {
+                    self?.model.prefetchNextPageNews()
+                }
             }
             .store(in: &bag)
     }
