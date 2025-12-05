@@ -1,6 +1,6 @@
 import UIKit
 
-final class AnyCache<T>: CacheProtocol {
+final class AnyCache<T: Costable>: CacheProtocol {
     typealias Value = T
     private let cache = NSCache<NSString, AnyObject>()
     
@@ -14,7 +14,7 @@ final class AnyCache<T>: CacheProtocol {
     }
     
     func set(_ value: Value, for key: CacheKeyProtocol) {
-        cache.setObject(value as AnyObject, forKey: key.key as NSString)
+        cache.setObject(value as AnyObject, forKey: key.key as NSString, cost: value.cacheCost)
     }
     
     func remove(_ key: CacheKeyProtocol) {
@@ -25,3 +25,4 @@ final class AnyCache<T>: CacheProtocol {
         cache.removeAllObjects()
     }
 }
+
