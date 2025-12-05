@@ -4,11 +4,12 @@ import Foundation
 
 protocol NewsRepositoryProtocol: AnyObject {
     func getNewsPage(page: Int, pageSize: Int) async throws -> News
+    func prefetchNewsPage(page: Int, pageSize: Int) async throws
 }
 
 // MARK: - NewsRepository
 
-final class NewsRepository<Cache: CacheProtocol>: NewsRepositoryProtocol where Cache.Value == Data {
+final class NewsRepository<Cache: CacheProtocol>: NewsRepositoryProtocol where Cache.Value == CachedData {
     
     // MARK: - Properties
     
@@ -30,22 +31,41 @@ final class NewsRepository<Cache: CacheProtocol>: NewsRepositoryProtocol where C
         let key = NewsPageKey(key: String(page), pageSize: pageSize)
 
         if let cached = cache.get(key) {
-            let dto = try decode(cached)
+            let dto = try decode(cached.data)
             return News(dto)
         }
 
         if let data = await fileManager.read(filename: "news_\(page)_\(pageSize)") {
-            cache.set(data, for: key)
+            cache.set(CachedData(data), for: key)
             let dto = try decode(data)
             return News(dto)
         }
 
         let data = try await loader.loadData(page: page, pageSize: pageSize)
         try await fileManager.write(data, filename: "news_\(page)_\(pageSize)")
-        cache.set(data, for: key)
+        cache.set(CachedData(data), for: key)
 
         let dto = try decode(data)
         return News(dto)
+    }
+    
+    func prefetchNewsPage(page: Int, pageSize: Int) async throws {
+        let key = NewsPageKey(key: String(page), pageSize: pageSize)
+
+        if let cached = cache.get(key) {
+            let dto = try decode(cached.data)
+            return
+        }
+
+        if let data = await fileManager.read(filename: "news_\(page)_\(pageSize)") {
+            cache.set(CachedData(data), for: key)
+            let dto = try decode(data)
+            return
+        }
+
+        let data = try await loader.loadData(page: page, pageSize: pageSize)
+        try await fileManager.write(data, filename: "news_\(page)_\(pageSize)")
+        cache.set(CachedData(data), for: key)
     }
     
     // MARK: - Private Methods

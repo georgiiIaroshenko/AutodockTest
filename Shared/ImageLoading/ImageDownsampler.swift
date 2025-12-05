@@ -1,9 +1,9 @@
 import UIKit
 protocol ImageDownsamplerProtocol: AnyObject {
-    func downsample(_ data: Data, to size: CGSize) async -> UIImage?
+    func downsampleDetached(_ data: Data, to size: CGSize) async -> UIImage?
 }
 
-actor ImageDownsampler: ImageDownsamplerProtocol {
+final class ImageDownsampler: ImageDownsamplerProtocol {
     
     private let scale: CGFloat
     
@@ -11,7 +11,8 @@ actor ImageDownsampler: ImageDownsamplerProtocol {
         self.scale = scale
     }
     
-    func downsample(_ data: Data, to size: CGSize) async -> UIImage? {
+    func downsampleDetached(_ data: Data, to size: CGSize) async -> UIImage? {
+
         let scale = self.scale
         
         return await Task.detached(priority: .userInitiated) {

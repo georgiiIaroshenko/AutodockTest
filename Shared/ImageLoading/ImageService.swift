@@ -9,7 +9,7 @@ protocol AllImageLoadingProtocol: AnyObject, SingleImageLoadingProtocol {
 
 protocol ImageServiceProtocol: SingleImageLoadingProtocol, AllImageLoadingProtocol {}
 
-actor ImageService<Cache: CacheProtocol>: ImageServiceProtocol where Cache.Value == UIImage {
+actor ImageService<Cache: CacheProtocol>: ImageServiceProtocol where Cache.Value == CachedImage {
     private let fileManager: PrefixedFileExchangeProtocol
     private let cache: Cache
     private let downsampler: ImageDownsamplerProtocol
@@ -28,47 +28,13 @@ actor ImageService<Cache: CacheProtocol>: ImageServiceProtocol where Cache.Value
         guard let url = url else { throw CancellationError() }
 
         let key = ImageCacheKey(url: url, size: imageSize)
-        if let cached = await cache.get(key) {
-            return cached 
+        if let cached = cache.get(key) {
+            return cached.image
         }
         try Task.checkCancellation()
-        return try await inflight.run(key: key) { [weak self] in
-            guard let self else { throw CancellationError() }
-            
-            if let cached = await cache.get(key) { return cached }
-            
-            if let data = await fileManager.read(filename: key.key) {
-                if let image = await self.decode(data) {
-                    await cache.set(image, for: key)
-                    return image
-                } else {
-                    await fileManager.remove(filename: key.key)
-                }
-            }
-            
-            try Task.checkCancellation()
-            guard let validURL = URL(string: url) else { 
-                throw ImageServiceError.invalidURL
-            }
-            
-            do {
-                let data = try await loader.loadData(from: validURL)
-                
-                guard let down = await downsampler.downsample(data, to: imageSize) else {
-                    throw ImageServiceError.downsampleFailed
-                }
-                
-                try await fileManager.write(self.encode(down), filename: key.key)
-                await cache.set(down, for: key)
-                
-                return down
-            } catch is CancellationError {
-                throw CancellationError()
-            } catch let error as ImageServiceError {
-                throw error
-            } catch {
-                throw error
-            }
+        
+        return try await inflight.run(key: key) { [self] in
+            try await loadAndCache(url: url, key: key, size: imageSize)
         }
     }
 
@@ -89,14 +55,45 @@ actor ImageService<Cache: CacheProtocol>: ImageServiceProtocol where Cache.Value
 }
 
 private extension ImageService {
-    private func decode(_ data: Data) async -> UIImage? {
-        guard let image = UIImage(data: data) else { return nil }
-        return await image.byPreparingForDisplay()
+    func decodeDetached(_ data: Data) async -> UIImage? {
+        return await Task.detached(priority: .userInitiated) {
+            guard let image = UIImage(data: data) else { return nil }
+            return await image.byPreparingForDisplay()
+        }.value
     }
-    private func encode(_ image: UIImage) throws -> Data {
+    
+    func encodeDetached(_ image: UIImage) async throws -> Data {
+        return try await Task.detached(priority: .userInitiated) {
         guard let data = image.jpegData(compressionQuality: 0.7) else { throw ImageServiceError.encodeFailed }
-        return data
+            return data
+        }.value
     }
+    
+    private func loadAndCache(url: String, key: ImageCacheKey, size: CGSize) async throws -> UIImage {
+            
+            if let data = await fileManager.read(filename: key.key),
+               let image = await decodeDetached(data) {
+                cache.set(CachedImage(image), for: key)
+                return image
+            }
+            
+            guard let validURL = URL(string: url) else {
+                throw ImageServiceError.invalidURL
+            }
+            
+            let data = try await loader.loadData(from: validURL)
+            
+        guard let image = await downsampler.downsampleDetached(data, to: size) else {
+                throw ImageServiceError.downsampleFailed
+            }
+            
+            Task.detached(priority: .background) { [fileManager, key] in
+                try? await fileManager.write(image.jpegData(compressionQuality: 0.7) ?? Data(), filename: key.key)
+            }
+            
+            cache.set(CachedImage(image), for: key)
+            return image
+        }
 }
 
 // MARK: - ImageServiceError
