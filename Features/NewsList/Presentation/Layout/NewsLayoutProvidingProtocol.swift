@@ -34,6 +34,7 @@ extension NewsLayoutProvidingProtocol {
             guard let self else { return nil }
             let trait = environment.traitCollection
             let isLandscape = trait.verticalSizeClass == .compact
+
             
             let columnCount = self.columns(for: environment)
 

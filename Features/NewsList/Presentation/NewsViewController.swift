@@ -85,6 +85,7 @@ extension NewsViewController: SetupView {
                     self?.animationView.stopAnimation()
                 }
                 self?.collectionView.resetPrefetchTrigger()
+
             }
             .store(in: &bag)
     }
