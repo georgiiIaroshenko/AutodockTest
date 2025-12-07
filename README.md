@@ -29,7 +29,7 @@
 
 <p align="center">
   <img src="Screenshots/iPadLandscape.png" width="300" alt="News List iPad Landscape">
-  <img src="Screenshots/iPadPortret.imageset/iPadPortret.png" width="200" alt="News List iPad Portrait">
+  <img src="Screenshots/iPadPortret.png" width="200" alt="News List iPad Portrait">
 </p>
 
 <p align="center">
