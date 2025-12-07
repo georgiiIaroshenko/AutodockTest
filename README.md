@@ -169,6 +169,25 @@ func createLayout() -> UICollectionViewLayout {
 }
 ```
 
+### Pagination & Prefetching
+
+Two-level data loading system for smooth infinite scroll:
+
+- **Pull-to-refresh** — user-triggered page loading
+- **Background prefetch** — automatic next page load when 5 items from end
+- **Deduplication** — prevents duplicate items via `Set<Int>`
+- **State tracking** — loading flags prevent concurrent requests
+```swift
+func collectionView(_ collectionView: UICollectionView, 
+                    prefetchItemsAt indexPaths: [IndexPath]) {
+    let totalItems = dataSource.snapshot().numberOfItems
+    guard let maxIndex = indexPaths.map({ $0.item }).max(),
+          totalItems - maxIndex - 1 <= 5 else { return }
+    
+    prefetchThresholdSubject.send(true)
+}
+```
+
 ### Content Configuration API
 
 Modern cell configuration replacing `cellForItemAt`:
