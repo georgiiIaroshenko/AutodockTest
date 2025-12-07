@@ -12,6 +12,7 @@ final class ImageDownsampler: ImageDownsamplerProtocol {
     }
     
     func downsampleDetached(_ data: Data, to size: CGSize) async -> UIImage? {
+
         let scale = self.scale
         
         return await Task.detached(priority: .userInitiated) {
