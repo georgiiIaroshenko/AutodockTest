@@ -28,22 +28,22 @@
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="Resources/Assets/Screenshots/iPadLandscape.png" width="300" alt="News List iPad Landscape">
-  <img src="Resources/Assets/Screenshots/iPadPortret.png" width="200" alt="News List iPad Portrait">
+  <img src="Screenshots/iPadLandscape.png" width="300" alt="News List iPad Landscape">
+  <img src="Screenshots/iPadPortret.imageset/iPadPortret.png" width="200" alt="News List iPad Portrait">
 </p>
 
 <p align="center">
-  <img src="Resources/Assets/Screenshots/iPhoneLandscape.png" width="300" alt="News List iPhone Landscape">
-  <img src="Resources/Assets/Screenshots/iPhonePortret.png" width="150" alt="News List iPhone Portrait">
+  <img src="Screenshots/iPhoneLandscape.png" width="300" alt="News List iPhone Landscape">
+  <img src="Screenshots/iPhonePortret.png" width="150" alt="News List iPhone Portrait">
 </p>
 
 <p align="center">
-  <img src="Resources/Assets/Screenshots/DetailScreen-iPadPro.png" width="300" alt="Article Detail iPad">
-  <img src="Resources/Assets/Screenshots/DetailScreen-iPhone.png" width="150" alt="Article Detail iPhone">
+  <img src="Screenshots/DetailScreen-iPadPro.png" width="300" alt="Article Detail iPad">
+  <img src="Screenshots/DetailScreen-iPhone.png" width="150" alt="Article Detail iPhone">
 </p>
 
 <p align="center">
-  <img src="Resources/Assets/Screenshots/Detail-safari-link.png" width="150" alt="Open in Safari">
+  <img src="Screenshots/Detail-safari-link.png" width="150" alt="Open in Safari">
 </p>
 
 ---
