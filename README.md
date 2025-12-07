@@ -28,22 +28,22 @@
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="Assets/Screenshots/iPadLandscape.png" width="300" alt="News List iPad Landscape">
-  <img src="Assets/Screenshots/iPadPortret.png" width="200" alt="News List iPad Portrait">
+  <img src="Resources/Assets/Screenshots/iPadLandscape.png" width="300" alt="News List iPad Landscape">
+  <img src="Resources/Assets/Screenshots/iPadPortret.png" width="200" alt="News List iPad Portrait">
 </p>
 
 <p align="center">
-  <img src="Assets/Screenshots/iPhoneLandscape.png" width="300" alt="News List iPhone Landscape">
-  <img src="Assets/Screenshots/iPhonePortret.png" width="150" alt="News List iPhone Portrait">
+  <img src="Resources/Assets/Screenshots/iPhoneLandscape.png" width="300" alt="News List iPhone Landscape">
+  <img src="Resources/Assets/Screenshots/iPhonePortret.png" width="150" alt="News List iPhone Portrait">
 </p>
 
 <p align="center">
-  <img src="Assets/Screenshots/DetailScreen-iPadPro.png" width="300" alt="Article Detail iPad">
-  <img src="Assets/Screenshots/DetailScreen-iPhone.png" width="150" alt="Article Detail iPhone">
+  <img src="Resources/Assets/Screenshots/DetailScreen-iPadPro.png" width="300" alt="Article Detail iPad">
+  <img src="Resources/Assets/Screenshots/DetailScreen-iPhone.png" width="150" alt="Article Detail iPhone">
 </p>
 
 <p align="center">
-  <img src="Assets/Screenshots/Detail-safari-link.png" width="150" alt="Open in Safari">
+  <img src="Resources/Assets/Screenshots/Detail-safari-link.png" width="150" alt="Open in Safari">
 </p>
 
 ---
@@ -51,8 +51,8 @@
 ## 🎬 Demo
 
 <p align="center">
-  <img src="Assets/Demo/scroll-demo.gif" width="300" alt="Infinite Scroll Demo">
-  <img src="Assets/Demo/navigation-demo.gif" width="300" alt="Navigation Demo">
+  <img src="Resources/Assets/Demo/scroll-demo.gif" width="300" alt="Infinite Scroll Demo">
+  <img src="Resources/Assets/Demo/navigation-demo.gif" width="300" alt="Navigation Demo">
 </p>
 
 ---
